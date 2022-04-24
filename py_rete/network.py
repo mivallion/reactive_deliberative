@@ -61,6 +61,8 @@ class ReteNetwork:
             matches = list(self.matches)
             if len(matches) <= 0:
                 break
+            highest_priority = max(matches, key=lambda x: x.pnode.production.priority).pnode.production.priority
+            matches = [match for match in matches if match.pnode.production.priority == highest_priority]
             match = random.choice(matches)
             await match.fire()
             n -= 1
@@ -392,9 +394,6 @@ class ReteNetwork:
         return node
 
     def build_or_share_p(self, parent: ReteNode, prod: Production) -> PNode:
-        for child in parent.children:
-            if isinstance(child, PNode):
-                return child
         node = PNode(production=prod, parent=parent)
         parent.children.append(node)
         self.update_new_node_with_matches_from_above(node)

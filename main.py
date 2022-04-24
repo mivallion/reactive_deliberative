@@ -18,11 +18,19 @@ async def make_red(net, fact):
     net.update_fact(fact)
 
 
+@Production(V('fact') << Fact(light_color="green"), priority=2)
+async def make_red_high_priority(net, fact):
+    print('making red high priority')
+    fact['light_color'] = 'red'
+    net.update_fact(fact)
+
+
 async def main():
     rd = ReactiveDeliberative()
     rd.add_fact("green", "light_color")
     rd.add_production(make_red)
     rd.add_production(make_green)
+    rd.add_production(make_red_high_priority)
     await rd.task
 
 
