@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 import random
 from itertools import product
+from datetime import datetime
 
 from py_rete.bind_node import BindNode
 from py_rete.filter_node import FilterNode
@@ -51,20 +52,42 @@ class ReteNetwork:
         self.fact_counter: int = 0
         self.production_counter: int = 0
         self.productions: Set[Production] = set()
+        self.execution_timestamps = {}
 
-    async def run(self, n: int = 10) -> None:
+    @staticmethod
+    def __filter_by_priority(matches: list[Match]):
+        if len(matches) == 0:
+            return []
+        highest_priority = max(matches, key=lambda x: x.pnode.production.priority).pnode.production.priority
+        return [match for match in matches if match.pnode.production.priority == highest_priority]
+
+    def __filter_by_timeout(self, matches: list[Match]):
+        if len(matches) == 0:
+            return []
+        return [
+            match
+            for match in matches
+            if match.pnode.production.id not in self.execution_timestamps or
+            abs(self.now - self.execution_timestamps[match.pnode.production.id]) > match.pnode.production.timeout
+        ]
+
+    async def run(self, n: int = 1) -> None:
         """
         First n rules, chosen at random. After each rule is fired the facts are
         updated and new matches computed.
         """
         while n > 0:
             matches = list(self.matches)
+            matches = self.__filter_by_timeout(matches)
+            matches = self.__filter_by_priority(matches)
+
             if len(matches) <= 0:
                 break
-            highest_priority = max(matches, key=lambda x: x.pnode.production.priority).pnode.production.priority
-            matches = [match for match in matches if match.pnode.production.priority == highest_priority]
+
             match = random.choice(matches)
             await match.fire()
+            prod_id = match.pnode.production.id
+            self.execution_timestamps[prod_id] = self.now
             n -= 1
 
     def __repr__(self):
@@ -221,6 +244,10 @@ class ReteNetwork:
     @property
     def wmes(self) -> Set[WME]:
         return self.working_memory
+
+    @property
+    def now(self) -> float:
+        return datetime.timestamp(datetime.now())
 
     def add_production(self, prod: Production) -> None:
         """
@@ -472,11 +499,11 @@ class ReteNetwork:
         if parent == self.beta_root:
             new_node.left_activation(None, None, {})
         elif (isinstance(parent, BetaMemory) and
-                not isinstance(parent, (NccNode, NegativeNode))):
+              not isinstance(parent, (NccNode, NegativeNode))):
             for tok in parent.items:
                 new_node.left_activation(token=tok)
         elif (isinstance(parent, JoinNode) and
-                not isinstance(parent, NegativeNode)):
+              not isinstance(parent, NegativeNode)):
             saved_list_of_children = parent.children
             parent.children = [new_node]
             for item in parent.amem.items:

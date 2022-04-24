@@ -2,14 +2,14 @@ import asyncio
 
 from py_rete import Fact, Production, V, ReteNetwork
 
+
 class ReactiveDeliberative:
-    def __init__(self, loop_delay=1):
+    def __init__(self, loop_delay=0):
         self.fact = Fact()
         self.network = ReteNetwork()
         self.network.add_fact(self.fact)
         self.loop_delay = loop_delay
         self.network_lock = asyncio.Lock()
-
         self.task = asyncio.get_event_loop().create_task(self._network_loop())
 
     def _get_fact_last_int_idx(self):
@@ -18,7 +18,7 @@ class ReactiveDeliberative:
     async def _network_loop(self):
         async with self.network_lock:
             while 1:
-                await self.network.run(1)
+                await self.network.run()
                 await asyncio.sleep(self.loop_delay)
 
     def add_fact(self, value, parameter=None):

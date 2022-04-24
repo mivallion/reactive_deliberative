@@ -98,13 +98,15 @@ class Production():
 
     def __init__(self,
                  pattern: Optional[Union[ConditionalElement, ConditionalList]] = None,
-                 priority: int = 1):
+                 priority: int = 1,
+                 timeout: float = 0):
         self.__wrapped__: Optional[Callable] = None
         self._wrapped_args: List[str] = []
         self._rete_net = None
         self.pattern: Optional[Union[ConditionalElement,
                                      ConditionalList]] = pattern
         self.priority = priority
+        self.timeout = timeout
         self.id: Optional[str] = None
         self.p_nodes: List[PNode] = []
 
