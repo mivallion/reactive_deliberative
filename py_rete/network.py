@@ -85,9 +85,11 @@ class ReteNetwork:
                 break
 
             match = random.choice(matches)
-            await match.fire()
+
             prod_id = match.pnode.production.id
             self.execution_timestamps[prod_id] = self.now
+
+            await match.fire()
             n -= 1
 
     def __repr__(self):
