@@ -1,4 +1,8 @@
+import asyncio
 import datetime
+from os import listdir
+from os.path import join, isfile
+from pathlib import Path
 
 import aiohttp
 import pandas as pd
@@ -6,17 +10,24 @@ import pandas as pd
 from examples.moex_iss_dumper.repository.trades import TradesRepository
 
 
+def get_directory_files(path):
+    return [join(path, f) for f in listdir(path) if isfile(join(path, f))]
+
+
 class MoexIssDumper:
-    def __init__(self, url, start_date, end_date, dump_dir, db_filepath):
+    def __init__(self, url, start_date, end_date, dump_dir, db_filepath, external_directory):
         self.url = url
         self.start_date = start_date
         self.end_date = end_date
         self.current_date = start_date
         self.dump_dir = dump_dir
+        self.external_directory = external_directory
         self.trades = TradesRepository(db_filepath)
         self.processed_dates = []
+        self.processed_external_files = []
         self.current_dataframe = pd.DataFrame()
         self.offset = 0
+        self.previous_length = 0
 
     @property
     def current_date_str(self):
@@ -24,6 +35,7 @@ class MoexIssDumper:
 
     def write_to_csv(self, filename):
         if len(self.current_dataframe) != 0:
+            Path(Path(filename).parent).mkdir(parents=True, exist_ok=True)
             self.current_dataframe.to_csv(filename)
 
     def write_to_db(self):
@@ -61,14 +73,18 @@ class MoexIssDumper:
                 self.offset += 5000
         return True
 
-    async def get_from_url(self):
+    def clear_buffer(self):
         self.current_dataframe = pd.DataFrame()
         self.offset = 0
+        self.previous_length = 0
+
+    async def get_from_url(self):
         while await self.get_batch_from_url():
-            print(f'loaded {self.offset}')
+            print(
+                f'loaded {len(self.current_dataframe) - self.previous_length}: from {self.previous_length} to {len(self.current_dataframe)}')
+            self.previous_length = len(self.current_dataframe)
 
     async def dump(self):
-        # while self.current_date <= self.end_date:
         await self.get_from_url()
         if len(self.current_dataframe) > 0:
             self.write_to_csv(f'{self.dump_dir}/{self.current_date_str}.csv')
@@ -76,3 +92,30 @@ class MoexIssDumper:
             self.write_to_db()
         self.processed_dates.append(self.current_date_str)
         self.current_date += datetime.timedelta(days=1)
+
+    async def external_upload(self, filepath):
+        df_buffer = self.current_dataframe.copy()
+        date_buffer = self.current_date
+
+        self.current_dataframe = pd.read_csv(filepath)
+        self.current_date = datetime.datetime.strptime(Path(filepath).name[:-4], "%Y%m%d")
+        if len(self.current_dataframe) > 0:
+            self.transform()
+            self.write_to_db()
+        self.processed_dates.append(self.current_date_str)
+        self.current_date = date_buffer
+        self.current_dataframe = df_buffer
+        self.processed_external_files.append(filepath)
+
+    async def external_upload_predicate(self):
+        files = get_directory_files(self.external_directory)
+        await asyncio.sleep(0)
+        return len(set(files).difference(self.processed_external_files)) > 0
+
+    async def external_upload_action(self):
+        files = get_directory_files(self.external_directory)
+        files = set(files).difference(self.processed_external_files)
+        await asyncio.sleep(0)
+        for file in files:
+            print(f'external uploading {file}')
+            await self.external_upload(file)
