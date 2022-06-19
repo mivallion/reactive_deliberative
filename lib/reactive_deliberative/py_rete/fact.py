@@ -1,12 +1,13 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-from itertools import chain
 
-from py_rete.conditions import ComposableCond
-from py_rete.conditions import Cond
-from py_rete.common import gen_variable
-from py_rete.common import WME
-from py_rete.common import V
+from itertools import chain
+from typing import TYPE_CHECKING
+
+from reactive_deliberative.py_rete.common import V
+from reactive_deliberative.py_rete.common import WME
+from reactive_deliberative.py_rete.common import gen_variable
+from reactive_deliberative.py_rete.conditions import ComposableCond
+from reactive_deliberative.py_rete.conditions import Cond
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import Generator

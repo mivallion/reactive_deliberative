@@ -1,29 +1,30 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-from itertools import product
-from functools import update_wrapper
-import inspect
 
-from py_rete.conditions import ConditionalList
-from py_rete.conditions import ConditionalElement
-from py_rete.conditions import Cond
-from py_rete.conditions import Ncc
-from py_rete.conditions import Neg
-from py_rete.conditions import NOT
-from py_rete.conditions import Filter
-from py_rete.conditions import Bind
-from py_rete.conditions import AND
-from py_rete.conditions import OR
-from py_rete.fact import Fact
-from py_rete.common import V
-from py_rete.common import Token
+import inspect
+from functools import update_wrapper
+from itertools import product
+from typing import TYPE_CHECKING
+
+from reactive_deliberative.py_rete.common import Token
+from reactive_deliberative.py_rete.common import V
+from reactive_deliberative.py_rete.conditions import AND
+from reactive_deliberative.py_rete.conditions import Bind
+from reactive_deliberative.py_rete.conditions import Cond
+from reactive_deliberative.py_rete.conditions import ConditionalElement
+from reactive_deliberative.py_rete.conditions import ConditionalList
+from reactive_deliberative.py_rete.conditions import Filter
+from reactive_deliberative.py_rete.conditions import NOT
+from reactive_deliberative.py_rete.conditions import Ncc
+from reactive_deliberative.py_rete.conditions import Neg
+from reactive_deliberative.py_rete.conditions import OR
+from reactive_deliberative.py_rete.fact import Fact
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import Optional
     from typing import Callable
     from typing import List
     from typing import Union
-    from py_rete.pnode import PNode
+    from reactive_deliberative.py_rete.pnode import PNode
 
 
 def compile_disjuncts(it, nest: bool = True):
@@ -137,7 +138,7 @@ class Production():
                       if k in self._wrapped_args}
         if inspect.iscoroutinefunction(self.__wrapped__):
             return await self.__wrapped__(*args, **kwargs)
-        return await self.__wrapped__(*args, **kwargs)
+        return self.__wrapped__(*args, **kwargs)
 
     def __call__(self, *args, **kwargs):
         if self.__wrapped__ is None:

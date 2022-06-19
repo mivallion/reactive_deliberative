@@ -1,16 +1,17 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-from py_rete.common import Token
-from py_rete.common import WME
-from py_rete.common import V
-from py_rete.alpha import AlphaMemory
-from py_rete.beta import ReteNode
+from reactive_deliberative.py_rete.alpha import AlphaMemory
+from reactive_deliberative.py_rete.beta import ReteNode
+from reactive_deliberative.py_rete.common import Token
+from reactive_deliberative.py_rete.common import V
+from reactive_deliberative.py_rete.common import WME
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import Dict
     from typing import Any
-    from py_rete.conditions import Cond
+    from reactive_deliberative.py_rete.conditions import Cond
 
 
 class JoinNode(ReteNode):
@@ -33,6 +34,7 @@ class JoinNode(ReteNode):
     as above). Similarly, for matches, updated bindings are created and
     children are activated.
     """
+
     def __init__(self, amem: AlphaMemory, condition: Cond, **kwargs):
         super().__init__(**kwargs)
         self.amem: AlphaMemory = amem
@@ -92,7 +94,7 @@ class JoinNode(ReteNode):
                 loc = self.amem.successors.index(ancestor)
             except ValueError:
                 loc = -1
-            self.amem.successors.insert(loc+1, self)
+            self.amem.successors.insert(loc + 1, self)
         else:
             self.amem.successors.insert(0, self)
 

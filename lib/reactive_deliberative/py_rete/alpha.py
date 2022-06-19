@@ -1,11 +1,12 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import List
     from typing import Optional
-    from py_rete.join_node import JoinNode
-    from py_rete.common import WME
+    from reactive_deliberative.py_rete.join_node import JoinNode
+    from reactive_deliberative.py_rete.common import WME
 
 
 class AlphaMemory:

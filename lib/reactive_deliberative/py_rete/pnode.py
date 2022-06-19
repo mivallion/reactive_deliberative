@@ -1,16 +1,17 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-from py_rete.common import Token
-from py_rete.production import Production
-from py_rete.beta import BetaMemory
+from reactive_deliberative.py_rete.beta import BetaMemory
+from reactive_deliberative.py_rete.common import Token
+from reactive_deliberative.py_rete.production import Production
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import List
     from typing import Dict
     from typing import Any
-    from py_rete.common import WME
-    from py_rete.common import V
+    from reactive_deliberative.py_rete.common import WME
+    from reactive_deliberative.py_rete.common import V
 
 
 class PNode(BetaMemory):

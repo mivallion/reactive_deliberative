@@ -1,9 +1,9 @@
 import asyncio
 import datetime
 
-from examples.moex_iss_dumper.moex_iss_dumper import MoexIssDumper
-from py_rete import Production, V, Fact
-from reactive_deliberative.reactive_deliberative import ReactiveDeliberative
+from moex_iss_dumper import MoexIssDumper
+from reactive_deliberative import Production, V, Fact
+from reactive_deliberative import ReactiveDeliberative
 
 
 async def external_upload_predicate():
@@ -64,7 +64,7 @@ async def write_to_db(net, fact):
 
 if __name__ == '__main__':
     url = 'https://iss.moex.com/iss/history/engines/currency/markets/selt/trades.json'
-    db_filepath = r'C:\Users\mivallion\source\repos\reactive_deliberative\db.db'
+    db_filepath = r'./db.db'
     start_date = datetime.datetime(2022, 1, 10)
     end_date = datetime.datetime(2022, 1, 20)
     dump_dir = "./iss_dump/"

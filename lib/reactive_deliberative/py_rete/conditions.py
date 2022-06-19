@@ -1,9 +1,10 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-from itertools import chain
-from dataclasses import dataclass
 
-from py_rete.common import V
+from dataclasses import dataclass
+from itertools import chain
+from typing import TYPE_CHECKING
+
+from reactive_deliberative.py_rete.common import V
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import List
@@ -11,7 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from typing import Tuple
     from typing import Callable
     from typing import Hashable
-    from py_rete.common import WME
+    from reactive_deliberative.py_rete.common import WME
 
 
 class ConditionalElement():
@@ -26,6 +27,7 @@ class ConditionalList(tuple):
     """
     A conditional that consists of a list of other conditionals.
     """
+
     def __new__(cls, *args: List[Union[ConditionalList, ConditionalElement]]):
         return super().__new__(cls, args)
 
@@ -45,9 +47,9 @@ class ComposableCond:
         if isinstance(self, AND) and isinstance(other, AND):
             return AND(*[x for x in chain(self, other)])
         elif isinstance(self, AND):
-            return AND(*[x for x in self]+[other])
+            return AND(*[x for x in self] + [other])
         elif isinstance(other, AND):
-            return AND(*[self]+[x for x in other])
+            return AND(*[self] + [x for x in other])
         else:
             return AND(self, other)
 
@@ -55,9 +57,9 @@ class ComposableCond:
         if isinstance(self, OR) and isinstance(other, OR):
             return OR(*[x for x in chain(self, other)])
         elif isinstance(self, OR):
-            return OR(*[x for x in self]+[other])
+            return OR(*[x for x in self] + [other])
         elif isinstance(other, OR):
-            return OR(*[self]+[x for x in other])
+            return OR(*[self] + [x for x in other])
         else:
             return OR(self, other)
 
@@ -133,6 +135,7 @@ class Neg(Cond):
     """
     A negated pattern.
     """
+
     def __repr__(self):
         return "-(%s ^%s %s)" % (self.identifier, self.attribute, self.value)
 
@@ -144,6 +147,7 @@ class Ncc(ConditionalList, ComposableCond):
     """
     A negated conjunction of conditions.
     """
+
     def __repr__(self):
         return "-{}".format(super(Ncc, self).__repr__())
 

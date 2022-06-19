@@ -1,17 +1,18 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-from py_rete.common import Token
-from py_rete.common import NegativeJoinResult
-from py_rete.alpha import AlphaMemory
-from py_rete.beta import BetaMemory
-from py_rete.join_node import JoinNode
+from reactive_deliberative.py_rete.alpha import AlphaMemory
+from reactive_deliberative.py_rete.beta import BetaMemory
+from reactive_deliberative.py_rete.common import NegativeJoinResult
+from reactive_deliberative.py_rete.common import Token
+from reactive_deliberative.py_rete.join_node import JoinNode
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import Dict
     from typing import Any
-    from py_rete.common import V
-    from py_rete.common import WME
+    from reactive_deliberative.py_rete.common import V
+    from reactive_deliberative.py_rete.common import WME
 
 
 class NegativeNode(BetaMemory, JoinNode):  # type: ignore

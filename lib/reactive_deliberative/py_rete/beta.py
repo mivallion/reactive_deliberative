@@ -1,23 +1,25 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-from py_rete.common import Token
+from reactive_deliberative.py_rete.common import Token
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import Any
     from typing import List
     from typing import Dict
     from typing import Optional
-    from py_rete.common import V
-    from py_rete.common import WME
-    from py_rete.alpha import AlphaMemory
-    from py_rete.join_node import JoinNode
+    from reactive_deliberative.py_rete.common import V
+    from reactive_deliberative.py_rete.common import WME
+    from reactive_deliberative.py_rete.alpha import AlphaMemory
+    from reactive_deliberative.py_rete.join_node import JoinNode
 
 
 class ReteNode:
     """
     Base BetaNode class, tracks parent and children.
     """
+
     def __init__(self, children: Optional[List[ReteNode]] = None,
                  parent: Optional[ReteNode] = None, **kwargs):
         super().__init__(**kwargs)
@@ -35,6 +37,7 @@ class BetaMemory(ReteNode):
     `all_children`, which is used in conjunction with `children` to support
     left unlinking.
     """
+
     def __init__(self, items: Optional[List[Token]] = None, **kwargs):
         """
         Similar to alpha memory, but items is a set of tokens instead of wmes.

@@ -4,7 +4,7 @@ import datetime
 import aiohttp
 import pandas as pd
 
-from examples.moex_iss_dumper.repository.trades import TradesRepository
+from repository.trades import TradesRepository
 
 
 class MoexIssDumper:
@@ -45,8 +45,10 @@ class MoexIssDumper:
     @staticmethod
     def transform(df):
         transformed_df = df.copy()
-        transformed_df['TRADEDATE'] = pd.to_datetime(df.TRADEDATE).apply(lambda x: x.year * 10000 + x.month * 100 + x.day)
-        transformed_df['TRADETIME'] = pd.to_datetime(df.TRADETIME).apply(lambda x: x.hour * 10000 + x.minute * 100 + x.second)
+        transformed_df['TRADEDATE'] = pd.to_datetime(df.TRADEDATE).apply(
+            lambda x: x.year * 10000 + x.month * 100 + x.day)
+        transformed_df['TRADETIME'] = pd.to_datetime(df.TRADETIME).apply(
+            lambda x: x.hour * 10000 + x.minute * 100 + x.second)
         return transformed_df
 
     async def get_from_url(self):
@@ -77,7 +79,7 @@ class MoexIssDumper:
 
 if __name__ == '__main__':
     url = 'https://iss.moex.com/iss/history/engines/currency/markets/selt/trades.json'
-    db_filepath = r'C:\Users\vikto\Documents\source\repos\reactive_deliberative\db.db'
+    db_filepath = r'./db.db'
     start_date = datetime.datetime(2002, 1, 10)
     end_date = datetime.datetime(2002, 1, 10)
     dump_dir = "./iss_dump/"

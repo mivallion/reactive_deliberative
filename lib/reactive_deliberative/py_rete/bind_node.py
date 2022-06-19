@@ -1,14 +1,15 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-import inspect
 
-from py_rete.beta import ReteNode
-from py_rete.common import V
+import inspect
+from typing import TYPE_CHECKING
+
+from reactive_deliberative.py_rete.beta import ReteNode
+from reactive_deliberative.py_rete.common import V
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import Any
     from typing import Dict
-    from py_rete.network import ReteNetwork
+    from reactive_deliberative.py_rete.network import ReteNetwork
 
 
 class BindNode(ReteNode):
@@ -37,9 +38,9 @@ class BindNode(ReteNode):
         """
         args = inspect.getfullargspec(self.func)[0]
         args = {arg: self._rete_net if arg == 'net' else
-                self._rete_net.facts[binding[V(arg)]] if
-                binding[V(arg)] in self._rete_net.facts else
-                binding[V(arg)] for arg in args}
+        self._rete_net.facts[binding[V(arg)]] if
+        binding[V(arg)] in self._rete_net.facts else
+        binding[V(arg)] for arg in args}
         return self.func(**args)
 
     def left_activation(self, token, wme, binding):

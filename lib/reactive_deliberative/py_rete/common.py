@@ -1,15 +1,15 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import Hashable
     from typing import List
     from typing import Optional
-    from py_rete.alpha import AlphaMemory
-    from py_rete.beta import ReteNode
-    from py_rete.pnode import PNode
-
+    from reactive_deliberative.py_rete.alpha import AlphaMemory
+    from reactive_deliberative.py_rete.beta import ReteNode
+    from reactive_deliberative.py_rete.pnode import PNode
 
 variable_counter = 0
 
@@ -53,7 +53,7 @@ class WME:
                  'negative_join_results']
 
     def __init__(self, identifier: Hashable, attribute: Hashable, value:
-                 Hashable) -> None:
+    Hashable) -> None:
         """
         Identifier, attribute, and value can be any kind of object except V
         objects (i.e., variables).
@@ -82,8 +82,8 @@ class WME:
         if not isinstance(other, WME):
             return False
         return self.identifier == other.identifier and \
-            self.attribute == other.attribute and \
-            self.value == other.value
+               self.attribute == other.attribute and \
+               self.value == other.value
 
 
 class Token:
@@ -188,18 +188,18 @@ class Token:
 
         :type token: Token
         """
-        from py_rete.ncc_node import NccNode
-        from py_rete.ncc_node import NccPartnerNode
-        from py_rete.negative_node import NegativeNode
-        from py_rete.beta import BetaMemory
-        from py_rete.pnode import PNode
-        from py_rete.join_node import JoinNode
+        from reactive_deliberative.py_rete.ncc_node import NccNode
+        from reactive_deliberative.py_rete.ncc_node import NccPartnerNode
+        from reactive_deliberative.py_rete.negative_node import NegativeNode
+        from reactive_deliberative.py_rete.beta import BetaMemory
+        from reactive_deliberative.py_rete.pnode import PNode
+        from reactive_deliberative.py_rete.join_node import JoinNode
 
         while self.children:
             self.children[0].delete_token_and_descendents()
 
         if (isinstance(self.node, BetaMemory) and not
-                isinstance(self.node, NccPartnerNode)):
+        isinstance(self.node, NccPartnerNode)):
             self.node.items.remove(self)
 
             if isinstance(self.node, PNode):

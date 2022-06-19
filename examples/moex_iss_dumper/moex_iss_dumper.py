@@ -7,7 +7,7 @@ from pathlib import Path
 import aiohttp
 import pandas as pd
 
-from examples.moex_iss_dumper.repository.trades import TradesRepository
+from repository.trades import TradesRepository
 
 
 def get_directory_files(path):

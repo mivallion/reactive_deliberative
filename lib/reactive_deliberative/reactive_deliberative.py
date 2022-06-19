@@ -1,7 +1,6 @@
 import asyncio
-from typing import Callable, Coroutine, Awaitable
 
-from py_rete import Fact, Production, V, ReteNetwork
+from reactive_deliberative.py_rete import Fact, ReteNetwork
 
 
 class ReactiveDeliberative:
